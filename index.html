@@ -1,143 +1,179 @@
 <!DOCTYPE html>
-<style>
-    :root {
-        --xbox-green: #107c10;
-        --xbox-dark: #1a1a1a;
-        --xbox-card: #2d2d2d;
-    }
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herblox Platform | Konsol Deneyimi</title>
+    <style>
+        :root {
+            --xbox-green: #107c10;
+            --xbox-dark: #1a1a1a;
+            --xbox-card: #2d2d2d;
+            --xbox-hover: #3a3a3a;
+        }
 
-    body {
-        background-color: #0a0a0a;
-        color: white;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        margin: 0;
-        overflow: hidden; /* Tam ekran konsol hissi */
-    }
+        body {
+            background-color: #0a0a0a;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            /* 1. İMLEÇ: Sayfanın genel, boş alanları için imleç */
+            cursor: url('boscursor.png'), auto;
+        }
 
-    /* Arka Plandaki Hafif Parıltı */
-    .bg-glow {
-        position: fixed;
-        top: -50%; left: -50%;
-        width: 200%; height: 200%;
-        background: radial-gradient(circle, rgba(16,124,16,0.1) 0%, rgba(0,0,0,0) 70%);
-        z-index: -1;
-    }
+        /* Xbox Arka Plan Parıltısı */
+        .bg-glow {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% -20%, rgba(16,124,16,0.15) 0%, rgba(0,0,0,0) 60%);
+            z-index: -1;
+        }
 
-    /* Üst Menü */
-    .navbar {
-        display: flex;
-        padding: 20px 50px;
-        gap: 30px;
-        font-size: 14px;
-        font-weight: 600;
-        color: #888;
-    }
+        /* Navigasyon Barı */
+        .navbar {
+            display: flex;
+            padding: 30px 60px;
+            gap: 40px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #888;
+        }
 
-    .nav-item.active {
-        color: white;
-        border-bottom: 3px solid var(--xbox-green);
-        padding-bottom: 5px;
-    }
+        .nav-item { transition: 0.3s; }
+        .nav-item:hover { color: white; }
+        .nav-item.active {
+            color: white;
+            border-bottom: 4px solid var(--xbox-green);
+            padding-bottom: 8px;
+        }
 
-    /* Ana Panel Layout */
-    .container {
-        display: grid;
-        grid-template-columns: 2fr 1fr;
-        grid-template-rows: auto auto;
-        gap: 20px;
-        padding: 0 50px;
-    }
+        /* Ana İçerik Alanı */
+        .container {
+            display: grid;
+            grid-template-columns: 1.8fr 1fr;
+            gap: 25px;
+            padding: 0 60px 40px 60px;
+            max-width: 1400px;
+        }
 
-    /* Xbox Kart Tasarımı */
-    .card {
-        background: var(--xbox-card);
-        border: 2px solid transparent;
-        border-radius: 4px;
-        padding: 20px;
-        transition: 0.2s ease;
-        position: relative;
-    }
+        /* Xbox Kart Yapısı */
+        .card {
+            background: var(--xbox-card);
+            border: 3px solid transparent;
+            border-radius: 6px;
+            padding: 25px;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-    .card:hover {
-        transform: scale(1.02);
-        border-color: white;
-        box-shadow: 0 0 20px rgba(255,255,255,0.2);
-    }
+        .card:hover {
+            transform: scale(1.03);
+            border-color: #ffffff;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+            background: var(--xbox-hover);
+            /* 2. İMLEÇ: Kartın veya butonun üzerine geldiğinde (seçilebilir alan) imleç */
+            cursor: url('secilicursor.png'), pointer;
+        }
 
-    /* Sol Büyük Kart (İndirme Alanı) */
-    .hero-card {
-        grid-row: span 2;
-        background: linear-gradient(45deg, #1a1a1a, #2d2d2d);
-        min-height: 400px;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-    }
+        /* Ana Hero Kartı */
+        .hero-card {
+            grid-row: span 2;
+            background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 450px;
+        }
 
-    /* Sistem Durumu Kartı (Karakterin Olduğu Yer) */
-    .status-card {
-        background: #107c10;
-        text-align: center;
-    }
+        h1 { font-size: 48px; margin: 0 0 10px 0; }
+        p { color: #bbb; font-size: 18px; line-height: 1.6; }
 
-    .status-img {
-        width: 150px;
-        margin-bottom: 10px;
-    }
+        /* Buton Grubu */
+        .btn-group { display: flex; gap: 15px; margin-top: 30px; }
 
-    /* Butonlar */
-    .xbox-btn {
-        background: #333;
-        color: white;
-        border: none;
-        padding: 12px 25px;
-        margin: 5px;
-        font-weight: bold;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-    }
+        .xbox-btn {
+            background: #404040;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-    .xbox-btn:hover { background: var(--xbox-green); }
+        .xbox-btn:hover { background: var(--xbox-green); }
 
-</style>
+        /* Durum Kartı (Doğrulanmış Karakter) */
+        .status-card {
+            text-align: center;
+            background: var(--xbox-green);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
 
-<div class="bg-glow"></div>
+        .status-img {
+            width: 180px;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
 
-<nav class="navbar">
-    <div class="nav-item active">ANA SAYFA</div>
-    <div class="nav-item">MAĞAZA</div>
-    <div class="nav-item">AYARLAR</div>
-</nav>
+        .status-text { font-size: 22px; font-weight: 800; }
 
-<div class="container">
-    <div class="card hero-card">
-        <h1>Herblox Studio</h1>
-        <p>Geleceğin oyun motoru sistemine hoş geldin.</p>
-        <div>
-            <button class="xbox-btn" onclick="playSelect()">📥 Windows İndir</button>
-            <button class="xbox-btn" onclick="playSelect()">📱 Android İndir</button>
+        /* Alt Bilgi Kartı */
+        .info-card { background: #1e1e1e; }
+    </style>
+</head>
+<body onload="playSound('PencereAcSesi.mp3')">
+
+    <div class="bg-glow"></div>
+
+    <nav class="navbar">
+        <div class="nav-item active">ANA SAYFA</div>
+        <div class="nav-item">PROJELER</div>
+        <div class="nav-item">API (BETA)</div>
+    </nav>
+
+    <div class="container">
+        <div class="card hero-card" onmouseover="playSound('SecmeSesi.mp3')">
+            <h1>Herblox Studio</h1>
+            <p>Windows LTSC 2019 uyumlu, Roblox altyapılı Metro ve Asansör simülasyon sistemleri.</p>
+            <div class="btn-group">
+                <button class="xbox-btn" onclick="playSound('SatinalmaSesi.mp3')">💻 Windows İndir</button>
+            </div>
+        </div>
+
+        <div class="card status-card" onmouseover="playSound('SolMenuSesi.mp3')">
+            <img src="Dorulanmış.png" alt="Doğrulandı" class="status-img">
+            <div class="status-text">SİSTEM DOĞRULANDI</div>
+        22.42: Geliştirici Oturumu Aktif.
+        </div>
+
+        <div class="card info-card" onmouseover="playSound('SecmeOkSesi.mp3')">
+            <h3>Hızlı Erişim</h3>
+            <p style="font-size: 14px;">🚇 Metro Bilgi v2.1: AKTİF<br>🏗️ Asansör API: Hazır</p>
+            <div style="margin-top: 15px; font-weight: bold; color: var(--xbox-green);">api.herblox.com</div>
         </div>
     </div>
 
-    <div class="card status-card">
-        <img src="Dorulanmış.png" class="status-img">
-        <h3>Sistem Doğrulandı</h3>
-        <p>Cihazın Herblox için hazır!</p>
-    </div>
-
-    <div class="card">
-        <h4>Hızlı Erişim</h4>
-        <div style="font-size: 12px; color: #bbb;">
-            🚇 Metro Test Sürüşü<br>
-            🏗️ Asansör Mantık Testi
-        </div>
-    </div>
-</div>
-
-<script>
-    function playSelect() {
-        new Audio('SeçSesi.mp3').play();
-    }
-</script>
+    <script>
+        function playSound(fileName) {
+            var audio = new Audio(fileName);
+            audio.play().catch(function(error) {
+                console.log("Ses oynatılamadı (muhtemelen SecSesi.mp3 adını SecSesi.mp3 yapmadın): " + fileName);
+            });
+        }
+    </script>
+</body>
+</html>
